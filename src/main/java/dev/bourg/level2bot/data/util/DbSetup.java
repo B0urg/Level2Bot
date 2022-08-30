@@ -1,6 +1,5 @@
 package dev.bourg.level2bot.data.util;
 
-import dev.bourg.level2bot.Level2Bot;
 import org.slf4j.Logger;
 
 import javax.sql.DataSource;
@@ -19,7 +18,7 @@ public class DbSetup {
     public static void initDb(DataSource dataSource) throws IOException, SQLException {
 
         String setup;
-        try(InputStream in = DbSetup.class.getClassLoader().getResourceAsStream("./sql/dbsetup.sql")){
+        try(InputStream in = DbSetup.class.getClassLoader().getResourceAsStream("dbsetup.sql")){
             setup = new String(in.readAllBytes());
         }catch (IOException e){
             log.error("Could not read db setup file", e);
