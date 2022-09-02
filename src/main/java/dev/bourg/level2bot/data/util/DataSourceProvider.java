@@ -21,12 +21,9 @@ public class DataSourceProvider {
     public static DataSource initDataSource(Database database) throws SQLException {
 
         MysqlDataSource mysqlDataSource = new MysqlConnectionPoolDataSource();
-
-        mysqlDataSource.setServerName(database.host());
+        mysqlDataSource.setUrl("jdbc:mysql:/" + database.host() + ":" + database.port() + "/" + database.database());
         mysqlDataSource.setUser(database.user());
-        mysqlDataSource.setPassword(database.password());
-        mysqlDataSource.setDatabaseName(database.database());
-        mysqlDataSource.setPortNumber(database.port());
+        mysqlDataSource.setPassword(database.password().equals("") ? null : database.password());
 
         testDataSource(mysqlDataSource);
 
