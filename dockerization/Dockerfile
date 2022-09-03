@@ -1,11 +1,11 @@
 FROM gradle:7.5-jdk18 AS build
 WORKDIR /source
 # Copying all build related files
-COPY ../gradle/wrapper/gradle-wrapper.properties gradle/wrapper/gradle-wrapper.properties
-COPY ../gradle/wrapper/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.jar
-COPY ../gradlew gradlew
-COPY ../settings.gradle.kts settings.gradle.kts
-COPY ../build.gradle.kts build.gradle.kts
+COPY gradle/wrapper/gradle-wrapper.properties gradle/wrapper/gradle-wrapper.properties
+COPY gradle/wrapper/gradle-wrapper.jar gradle/wrapper/gradle-wrapper.jar
+COPY gradlew gradlew
+COPY settings.gradle.kts settings.gradle.kts
+COPY build.gradle.kts build.gradle.kts
 # Only downloading dependencies
 # Eat the expected build failure since no source code has been copied yet
 RUN ./gradlew clean build --no-daemon > /dev/null 2>&1 || true
