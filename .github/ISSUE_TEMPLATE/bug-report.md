@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: Bug Report
 about: Describe this issue template's purpose here.
 title: ''
 labels: bug
@@ -12,9 +12,9 @@ _When does the bug happen?_ *
 `Content`
 _What happens?_ *
 `Content`
-_Did it happend just once?_ *
+_Did it happened just once?_ *
 `yes/no`
-_When did you recived the bug_
+_When did you receive the bug_
 `Date`
 
 ---

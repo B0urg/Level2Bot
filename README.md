@@ -10,7 +10,7 @@
 ---
 ## Setup
 >To set up the Bot for your Guild you will have to run the command `/setup` and optionally adding
-> a already existing channel to send the message in.
+> an already existing channel to send the message in.
 >Than your user id, guild id, channel id and message id will be stored in our database.
 > You can delete or request the data at every time.
  

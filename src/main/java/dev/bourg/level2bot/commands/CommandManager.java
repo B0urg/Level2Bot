@@ -141,7 +141,7 @@ public class CommandManager extends ListenerAdapter {
                         ).queue();
                     }
                     case "set" -> {
-                        // getting setting and value chaning it and sending an error if in an error happens
+                        // getting setting and value changing it and sending an error if in an error happens
                         String key = event.getOption("key").getAsString().toLowerCase();
                         Boolean value = event.getOption("value").getAsBoolean();
                         if (!guildData.changeSetting(event.getGuild().getIdLong(), key, value)) {
