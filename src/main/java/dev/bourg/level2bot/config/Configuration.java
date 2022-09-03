@@ -7,10 +7,13 @@ import java.io.*;
 
 public class Configuration {
 
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final File file = new File("config.json");
 
-    public void saveConfig() {
+    /**
+     * Saving config and writing default value to it
+     */
+    private void saveConfig() {
         try (FileWriter fileWriter = new FileWriter(file)){
             if(!file.exists()) file.createNewFile();
             fileWriter.write(gson.toJson(new ConfigFile()));
@@ -18,6 +21,12 @@ public class Configuration {
             e.printStackTrace();
         }
     }
+
+    /**
+     * Reading config and returning it if it exists else creating it
+     *
+     * @return The config content in form of a custom class(ConfigFile)
+     */
 
     public ConfigFile readConfig(){
         if(!file.exists()) saveConfig();

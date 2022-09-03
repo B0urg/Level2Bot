@@ -20,6 +20,12 @@ public class GuildLeaveListener extends ListenerAdapter{
         this.guildData = new GuildData(dataSource, configFile);
     }
 
+    /**
+     * Deleting all the data when getting removed from a guild
+     *
+     * @param event the event to listen for
+     */
+
     @Override
     public void onGuildLeave(@NotNull GuildLeaveEvent event) {
         if(guildData.getGuildByGuildID(event.getGuild().getIdLong()) != null){

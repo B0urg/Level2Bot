@@ -22,7 +22,7 @@ import java.util.*;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public class GuildData extends DataHolder {
+public class  GuildData extends DataHolder {
 
     private static final Logger log = getLogger(Level2Bot.class);
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -38,6 +38,16 @@ public class GuildData extends DataHolder {
         this.configFile = configFile;
     }
 
+    /**
+     *
+     * creating a new guild in the database
+     *
+     * @param guildId the id of the guild
+     * @param channelId the channel id to send updates to
+     * @param userId the id of the user who setuped the bot
+     * @param messageId the last send message to the channel from the id above
+     * @return if the query was successful or not
+     */
     public boolean createGuild(Long guildId, Long channelId, Long userId, Long messageId){
         if(getGuildByGuildID(guildId) != null){
             return false;
@@ -57,6 +67,13 @@ public class GuildData extends DataHolder {
             return false;
         }
     }
+
+    /**
+     *
+     * Getting all the guilds currently in the database
+     *
+     * @return if the query was successful or not
+     */
 
     public List<Guild> getGuilds(){
         try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
@@ -94,6 +111,14 @@ public class GuildData extends DataHolder {
         }
     }
 
+
+    /**
+     *
+     * Getting guild by id
+     *
+     * @param guildId the id of the guild to get
+     * @return The guild with the given id or null if it not exists
+     */
     public Guild getGuildByGuildID(Long guildId) {
         try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
                 "SELECT * FROM guilds WHERE guildId = ?;"
@@ -117,6 +142,16 @@ public class GuildData extends DataHolder {
         }
     }
 
+    /**
+     *
+     * changing a setting of guild by its id
+     *
+     * @param guildId the id of the guild to change the setting from
+     * @param key the setting name
+     * @param value the new value of the setting
+     * @return if the query was successful or not
+     */
+
     public boolean changeSetting(Long guildId, String key, Boolean value){
 
         try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
@@ -131,6 +166,14 @@ public class GuildData extends DataHolder {
             return false;
         }
     }
+
+    /**
+     *
+     * Getting all setting of a guild
+     *
+     * @param guildId the id of the guild to get the settings form
+     * @return a HashMap with the setting name as key and the content as value
+     */
 
     public Map<String, Boolean> getSettings(Long guildId) {
         Map<String, Boolean> settings = new HashMap<>();
@@ -155,7 +198,17 @@ public class GuildData extends DataHolder {
                 return null;
             }
         }
-        public boolean updateMessageId(Long guildId, Long messageId){
+
+    /**
+     *
+     * change the laser message id of a guild
+     *
+     * @param guildId the id of the guild to change the message id from
+     * @param messageId the new message id to change to
+     * @return if the query was successful or not
+     */
+
+    public boolean updateMessageId(Long guildId, Long messageId){
 
             try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
                     "UPDATE guilds SET messageId = ? WHERE guildId = ?;"
@@ -169,6 +222,14 @@ public class GuildData extends DataHolder {
                 return false;
             }
     }
+
+    /**
+     *
+     * Deleting a guild from ur database by its id
+     *
+     * @param guildId the id of the guild to delete id
+     * @return if the query was successful or not
+     */
 
     public boolean deleteDate(Long guildId){
         try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(

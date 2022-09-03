@@ -17,6 +17,14 @@ public class DataSourceProvider {
 
     private static final Logger log = getLogger(DataSourceProvider.class);
 
+    /**
+     *
+     * Initializing a dataSource with the given data and returning it
+     *
+     * @param database the login data to log in to the database
+     * @return The dataSource that gets created with the given data
+     * @throws SQLException if the login to the database fails
+     */
 
     public static DataSource initDataSource(Database database) throws SQLException {
 
@@ -32,6 +40,14 @@ public class DataSourceProvider {
         return mysqlDataSource;
 
     }
+
+    /**
+     *
+     * Testing if DataSource is valid
+     *
+     * @param dataSource the dataSource to test
+     * @throws SQLException if the connection from the dataSource is not valid
+     */
 
     public static void testDataSource(DataSource dataSource) throws SQLException {
         try (Connection conn = dataSource.getConnection()){
