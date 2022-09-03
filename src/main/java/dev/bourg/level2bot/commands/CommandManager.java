@@ -50,7 +50,7 @@ public class CommandManager extends ListenerAdapter {
                 // Checking if already given a channel else creating one
                 TextChannel textChannel;
                 if(event.getOption("channel") == null){
-                    textChannel = event.getGuild().createTextChannel("Level").complete();
+                    textChannel = event.getGuild().createTextChannel("Level2").complete();
                 }else {
                     textChannel = event.getOption("channel").getAsChannel().asTextChannel();
                 }
