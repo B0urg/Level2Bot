@@ -2,7 +2,6 @@ package dev.bourg.level2bot.commands;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dev.bourg.level2bot.Level2Bot;
 import dev.bourg.level2bot.config.ConfigFile;
 import dev.bourg.level2bot.data.GuildData;
 import dev.bourg.level2bot.data.StateData;
@@ -21,34 +20,34 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
 import javax.sql.DataSource;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class CommandManager extends ListenerAdapter {
 
-    private static final Logger log = getLogger(Level2Bot.class);
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private DataSource dataSource;
-    private ConfigFile configFile;
-    private GuildData guildData;
-    private StateData stateData;
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final GuildData guildData;
+    private final StateData stateData;
+
     public CommandManager(DataSource dataSource, ConfigFile configFile){
-        this.dataSource = dataSource;
-        this.configFile = configFile;
-        this.guildData = new GuildData(this.dataSource, this.configFile);
-        this.stateData = new StateData(this.dataSource);
+        this.guildData = new GuildData(dataSource, configFile);
+        this.stateData = new StateData(dataSource);
     }
 
+    /**
+     * Listening for SlashCommandInteractionEvent to manage commands
+     *
+     * @param event The event to listen for
+     */
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
         switch (event.getName()){
             case "setup":
+                // Checking if already given a channel else creating one
                 TextChannel textChannel;
                 if(event.getOption("channel") == null){
                     textChannel = event.getGuild().createTextChannel("Level").complete();
@@ -59,6 +58,7 @@ public class CommandManager extends ListenerAdapter {
                 textChannel.getManager().putRolePermissionOverride(event.getGuild().getPublicRole().getIdLong(), null, List.of(Permission.MESSAGE_SEND)).queue();
                 Message message = textChannel.sendMessageEmbeds(stateData.getCurrentState().getAsEmbed()).complete();
 
+                // Checking for errors while querying to database
                 if(!guildData.createGuild(event.getGuild().getIdLong(), textChannel.getIdLong(), event.getUser().getIdLong(), message.getIdLong())){
                     event.replyEmbeds(new EmbedBuilder()
                             .setTitle("Error!")
@@ -69,6 +69,7 @@ public class CommandManager extends ListenerAdapter {
                     return;
                 }
 
+                // replying if process successfully done
                 event.replyEmbeds(new EmbedBuilder()
                         .setColor(Color.GREEN)
                         .setTitle("Success!")
@@ -79,10 +80,11 @@ public class CommandManager extends ListenerAdapter {
                 break;
             case "data":
 
-                switch (event.getSubcommandName()){
-                    case "request":
+                switch (event.getSubcommandName()) {
+                    case "request" -> {
+                        // checking if guild is registered and if so getting guild data by id
                         Guild guild = guildData.getGuildByGuildID(event.getGuild().getIdLong());
-                        if(guild == null){
+                        if (guild == null) {
                             event.replyEmbeds(new EmbedBuilder()
                                     .setTitle("No Data found")
                                     .setDescription("There is no data about your server in our databases")
@@ -91,20 +93,19 @@ public class CommandManager extends ListenerAdapter {
                             ).queue();
                             return;
                         }
+                        // Creating a json string with the guild data and sending it
                         String dataString = "```json\n" + gson.toJson(new GuildDisplayData(guild.getUserId(), guild.getGuildId(), guild.getChannelId(), guild.getMessageId(), guild.getMention())) + "\n ```";
-
                         event.replyEmbeds(new EmbedBuilder()
-                                        .setTitle("Data - Info")
-                                        .setDescription("We collected all your data stored in our database and send it to you! \n If you want the data to get deleted run the command `/data purge` or remove to bot! \n If you remove the data we will no longer store your data or any backups!")
-                                        .addField("Data - Request", dataString, false)
-                                        .setColor(Color.ORANGE)
-                                        .build()
-                                ).queue();
-
-                        break;
-                    case "purge":
-
-                        if(!guildData.deleteDate(event.getGuild().getIdLong())){
+                                .setTitle("Data - Info")
+                                .setDescription("We collected all your data stored in our database and send it to you! \n If you want the data to get deleted run the command `/data purge` or remove to bot! \n If you remove the data we will no longer store your data or any backups!")
+                                .addField("Data - Request", dataString, false)
+                                .setColor(Color.ORANGE)
+                                .build()
+                        ).queue();
+                    }
+                    case "purge" -> {
+                        // Deleting guild data and sending a success embed if it was successful
+                        if (!guildData.deleteDate(event.getGuild().getIdLong())) {
                             event.replyEmbeds(new EmbedBuilder()
                                     .setTitle("Error")
                                     .setDescription("An Error happened while querying to data base \n Try again later or contact developers([here](https://dj-ka.net))")
@@ -120,20 +121,17 @@ public class CommandManager extends ListenerAdapter {
                                 .setColor(new Color(133, 2, 0))
                                 .build()
                         ).queue();
-
-                        break;
+                    }
                 }
 
                 break;
 
             case "settings":
 
-                switch (event.getSubcommandName()){
-
-                    case "get":
-
+                switch (event.getSubcommandName()) {
+                    case "get" -> {
+                        // getting setting and sending it
                         String keyString = event.getOption("key").getAsString().toLowerCase();
-
                         event.replyEmbeds(
                                 new EmbedBuilder()
                                         .setTitle("Success")
@@ -141,14 +139,12 @@ public class CommandManager extends ListenerAdapter {
                                         .setColor(Color.GREEN)
                                         .build()
                         ).queue();
-
-                        break;
-                    case "set":
-
+                    }
+                    case "set" -> {
+                        // getting setting and value chaning it and sending an error if in an error happens
                         String key = event.getOption("key").getAsString().toLowerCase();
                         Boolean value = event.getOption("value").getAsBoolean();
-
-                        if(!guildData.changeSetting(event.getGuild().getIdLong(), key, value)){
+                        if (!guildData.changeSetting(event.getGuild().getIdLong(), key, value)) {
                             event.replyEmbeds(
                                     new EmbedBuilder()
                                             .setColor(Color.RED)
@@ -158,22 +154,26 @@ public class CommandManager extends ListenerAdapter {
                             ).queue();
                             return;
                         }
-
                         event.replyEmbeds(
                                 new EmbedBuilder()
                                         .setTitle("Success")
-                                        .setDescription("Setting `" + key  + "` change successfully to `" + value + "`")
+                                        .setDescription("Setting `" + key + "` change successfully to `" + value + "`")
                                         .setColor(Color.GREEN)
                                         .build()
                         ).queue();
-
-                        break;
-
+                    }
                 }
 
                 break;
         }
     }
+
+    /**
+     *
+     * Listening for GuildReadyEvent and updating all commands
+     *
+     * @param event the event to listen for
+     */
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {

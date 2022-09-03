@@ -15,7 +15,16 @@ public class DbSetup {
 
     private static final Logger log = getLogger(DbSetup.class);
 
-    public static void initDb(DataSource dataSource) throws IOException, SQLException {
+    /**
+     *
+     * Getting setup.sql from resources folder and querying the content of it
+     *
+     * @param dataSource the DataSource to get the connection to query to
+     * @throws IOException if the setup.sql is not found
+     * @throws SQLException if the given DataSource isn't valid
+     */
+
+    public static void initDb(DataSource dataSource) throws SQLException, IOException {
 
         String setup;
         try(InputStream in = DbSetup.class.getClassLoader().getResourceAsStream("dbsetup.sql")){

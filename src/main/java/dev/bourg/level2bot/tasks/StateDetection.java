@@ -15,15 +15,21 @@ import java.util.TimerTask;
 
 public class StateDetection extends TimerTask {
 
-    private GuildData guildData;
-    private StateData stateData;
-    private ShardManager shardManager;
+    private final GuildData guildData;
+    private final StateData stateData;
+    private final ShardManager shardManager;
 
     public StateDetection(DataSource dataSource, ConfigFile configFile, ShardManager shardManager){
         this.guildData = new GuildData(dataSource, configFile);
         this.stateData = new StateData(dataSource);
         this.shardManager = shardManager;
     }
+
+    /**
+     *
+     * Creating a run method that runs every 10 seconds and checks for changes
+     *
+     */
 
     @Override
     public void run() {

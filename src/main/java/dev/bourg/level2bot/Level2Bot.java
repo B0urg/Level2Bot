@@ -37,6 +37,12 @@ public class Level2Bot {
         instance.start();
     }
 
+    /**
+     *
+     * Starting all bot related modules
+     *
+     */
+
     private void start(){
 
         log.info("Initializing Configuration");
@@ -58,10 +64,22 @@ public class Level2Bot {
 
     }
 
+    /**
+     *
+     * initializing the config
+     *
+     */
+
     private void initConfiguration(){
 
         configuration = new Configuration().readConfig();
     }
+
+    /**
+     *
+     * initializing the database connection
+     *
+     */
 
     private void initDatabase(){
         try {
@@ -91,6 +109,12 @@ public class Level2Bot {
                 .build();
 
     }
+
+    /**
+     *
+     * initializing the bot
+     *
+     */
 
     private void initBot(){
         shardManager.addEventListener(new ReadyListener(), new CommandManager(dataSource, configuration), new GuildLeaveListener(dataSource, configuration));

@@ -33,6 +33,11 @@ public class StateData extends DataHolder {
         super(source);
     }
 
+    /**
+     * Getting the dat a from the rest api and returning a stateManager with the data
+     * @return a new StateManager with the current state data
+     */
+
     public StateManager getCurrentState() {
         try {
             URL url = new URL("https://level2.lu/spaceapi");
@@ -65,6 +70,13 @@ public class StateData extends DataHolder {
             return null;
         }
     }
+
+    /**
+     * Update the last State saved in our database
+     * @param state the new State to change it to
+     * @return if the query was successful or not
+     */
+
     public boolean updateSavedState(State state){
         try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
                 "DELETE FROM state;"
@@ -86,6 +98,12 @@ public class StateData extends DataHolder {
             return false;
         }
     }
+
+    /**
+     * Getting the State saved in our datavase
+     *
+     * @return if the query was successful or not
+     */
 
     public State getSavedState(){
         try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
