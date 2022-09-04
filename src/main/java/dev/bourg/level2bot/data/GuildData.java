@@ -1,19 +1,12 @@
 package dev.bourg.level2bot.data;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import dev.bourg.level2bot.Level2Bot;
 import dev.bourg.level2bot.config.ConfigFile;
 import dev.bourg.level2bot.data.objects.Guild;
-import dev.bourg.level2bot.data.objects.StateManager;
 import dev.bourg.level2bot.data.util.DataHolder;
 import org.slf4j.Logger;
 
 import javax.sql.DataSource;
-import java.io.IOException;
-import java.net.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,9 +18,8 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class  GuildData extends DataHolder {
 
     private static final Logger log = getLogger(Level2Bot.class);
-    private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    private ConfigFile configFile;
+    private final ConfigFile configFile;
     /**
      * Create a new {@link DataHolder} with a datasource to the given datasource
      *

@@ -1,7 +1,6 @@
 package dev.bourg.level2bot.data.util;
 
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
-import dev.bourg.level2bot.Level2Bot;
 import dev.bourg.level2bot.config.elemets.Database;
 
 import com.mysql.cj.jdbc.MysqlDataSource;

@@ -1,6 +1,5 @@
 package dev.bourg.level2bot.listeners;
 
-import dev.bourg.level2bot.Level2Bot;
 import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;

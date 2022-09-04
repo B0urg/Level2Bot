@@ -3,7 +3,6 @@ package dev.bourg.level2bot.data.util;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Level;
 
 public class DataHolder {
 
@@ -29,10 +28,6 @@ public class DataHolder {
 
     protected Connection conn() throws SQLException {
         return source.getConnection();
-    }
-
-    protected DataSource source(){
-        return source;
     }
 
 }

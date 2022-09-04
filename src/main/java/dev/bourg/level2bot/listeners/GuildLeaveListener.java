@@ -10,13 +10,9 @@ import javax.sql.DataSource;
 
 public class GuildLeaveListener extends ListenerAdapter{
 
-    private final DataSource dataSource;
-    private final ConfigFile configFile;
-    private GuildData guildData;
+    private final GuildData guildData;
 
     public GuildLeaveListener(DataSource dataSource, ConfigFile configFile) {
-        this.dataSource = dataSource;
-        this.configFile = configFile;
         this.guildData = new GuildData(dataSource, configFile);
     }
 

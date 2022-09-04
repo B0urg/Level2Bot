@@ -3,7 +3,6 @@ package dev.bourg.level2bot.tasks;
 import dev.bourg.level2bot.config.ConfigFile;
 import dev.bourg.level2bot.data.GuildData;
 import dev.bourg.level2bot.data.StateData;
-import net.dv8tion.jda.api.entities.Channel;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -39,7 +38,9 @@ public class StateDetection extends TimerTask {
                 Guild guild = shardManager.getGuildById(guildDatas.getGuildId());
                 TextChannel channel = guild.getTextChannelById(guildDatas.getChannelId());
                 Message message = channel.sendMessageEmbeds(stateData.getCurrentState().getAsEmbed()).complete();
-                guildData.updateMessageId(guild.getIdLong(), message.getIdLong());
+                if(guildData.updateMessageId(guild.getIdLong(), message.getIdLong())){
+                    System.exit(1);
+                }
                 if(guildDatas.getMention()){
                     Message ping = channel.sendMessage(guild.getPublicRole().getAsMention()).complete();
                     ping.delete().queue();
@@ -51,7 +52,7 @@ public class StateDetection extends TimerTask {
                 Guild guild = shardManager.getGuildById(guildDatas.getGuildId());
                 TextChannel channel = guild.getTextChannelById(guildDatas.getChannelId());
                 Message message = channel.getHistory().getMessageById(guildDatas.getMessageId());
-                message.editMessageEmbeds(stateData.getCurrentState().getAsEmbed());
+                message.editMessageEmbeds(stateData.getCurrentState().getAsEmbed()).queue();
             });
         }
     }

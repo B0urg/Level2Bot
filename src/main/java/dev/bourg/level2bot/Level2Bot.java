@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -94,7 +93,9 @@ public class Level2Bot {
             throw new RuntimeException(e);
         }
 
-        new StateData(dataSource).updateSavedState(new StateData(dataSource).getCurrentState().getAsState());
+        if(!new StateData(dataSource).updateSavedState(new StateData(dataSource).getCurrentState().getAsState())){
+            System.exit(1);;
+        }
 
     }
 
