@@ -29,8 +29,7 @@ target/
 /.nb-gradle/
 build/
 !**/src/main/**/build/
-!**/src/test/**/build/
-
+!**/src/test/**/build/jdbl:mysql:/
 ### VS Code ###
 .vscode/
 
@@ -43,4 +42,4 @@ config.json
 .gradle
 
 # Ignore Gradle build output directory
-build
+build/
