@@ -32,8 +32,10 @@ public class CommandManager extends ListenerAdapter {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final GuildData guildData;
     private final StateData stateData;
+    private final ConfigFile configFile;
 
     public CommandManager(DataSource dataSource, ConfigFile configFile){
+        this.configFile = configFile;
         this.guildData = new GuildData(dataSource, configFile);
         this.stateData = new StateData(dataSource);
     }
@@ -45,6 +47,17 @@ public class CommandManager extends ListenerAdapter {
      */
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
+
+        if(configFile.devSettings().envrioment().equals("dev") && event.getGuild().getIdLong() != configFile.devSettings().devServer()){
+            event.replyEmbeds(new EmbedBuilder()
+                    .setTitle("Maintance")
+                    .setDescription("The bot is currently under maintance work and only available on dev Servers!")
+                    .setColor(Color.ORANGE)
+                    .build()
+            ).setEphemeral(true).queue();
+            return;
+        }
+
         switch (event.getName()){
             case "setup":
                 // Checking if already given a channel else creating one
@@ -177,6 +190,10 @@ public class CommandManager extends ListenerAdapter {
 
     @Override
     public void onGuildReady(@NotNull GuildReadyEvent event) {
+
+        if(configFile.devSettings().envrioment().equals("dev") && event.getGuild().getIdLong() != configFile.devSettings().devServer())return;
+
+
         List<CommandData> commands = new ArrayList<>();
         commands.add(Commands.slash("setup", "Setup the bot for your server!").addOption(OptionType.CHANNEL, "channel", "The update channel").setDefaultPermissions(DefaultMemberPermissions.DISABLED));
         commands.add(Commands.slash("data", "Manage your data stored in our database").addSubcommands(

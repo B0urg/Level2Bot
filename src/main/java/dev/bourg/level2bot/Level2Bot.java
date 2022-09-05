@@ -118,7 +118,7 @@ public class Level2Bot {
      */
 
     private void initBot(){
-        shardManager.addEventListener(new ReadyListener(), new CommandManager(dataSource, configuration), new GuildLeaveListener(dataSource, configuration));
+        shardManager.addEventListener(new ReadyListener(configuration, shardManager), new CommandManager(dataSource, configuration), new GuildLeaveListener(dataSource, configuration));
 
 
         Timer timer = new Timer();
