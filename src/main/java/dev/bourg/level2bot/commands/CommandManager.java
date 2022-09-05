@@ -10,7 +10,7 @@ import dev.bourg.level2bot.data.objects.GuildDisplayData;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
+import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.DefaultMemberPermissions;
@@ -189,9 +189,9 @@ public class CommandManager extends ListenerAdapter {
      */
 
     @Override
-    public void onGuildReady(@NotNull GuildReadyEvent event) {
+    public void onReady(@NotNull ReadyEvent event) {
 
-        if(configFile.devSettings().envrioment().equals("dev") && event.getGuild().getIdLong() != configFile.devSettings().devServer())return;
+
 
 
         List<CommandData> commands = new ArrayList<>();
@@ -211,6 +211,10 @@ public class CommandManager extends ListenerAdapter {
                                 .addChoice("Mention", "mention")
                 )
         ).setDefaultPermissions(DefaultMemberPermissions.DISABLED));
-        event.getGuild().updateCommands().addCommands(commands).queue();
+        if(configFile.devSettings().envrioment().equals("dev")){
+            event.getJDA().getGuildById(configFile.devSettings().devServer()).updateCommands().addCommands(commands).queue();
+        }else {
+            event.getJDA().updateCommands().addCommands(commands).queue();
+        }
     }
 }
