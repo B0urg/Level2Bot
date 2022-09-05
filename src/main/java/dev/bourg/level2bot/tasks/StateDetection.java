@@ -17,11 +17,13 @@ public class StateDetection extends TimerTask {
     private final GuildData guildData;
     private final StateData stateData;
     private final ShardManager shardManager;
+    private final ConfigFile configFile;
 
     public StateDetection(DataSource dataSource, ConfigFile configFile, ShardManager shardManager){
         this.guildData = new GuildData(dataSource, configFile);
         this.stateData = new StateData(dataSource);
         this.shardManager = shardManager;
+        this.configFile = configFile;
     }
 
     /**
@@ -35,10 +37,11 @@ public class StateDetection extends TimerTask {
         if(stateData.getSavedState().getOpen() != stateData.getCurrentState().getAsState().getOpen()){
             stateData.updateSavedState(stateData.getCurrentState().getAsState());
             guildData.getGuilds().forEach(guildDatas -> {
+                if(configFile.devSettings().envrioment().equals("dev") && !guildDatas.getGuildId().equals(configFile.devSettings().devServer())) return;
                 Guild guild = shardManager.getGuildById(guildDatas.getGuildId());
                 TextChannel channel = guild.getTextChannelById(guildDatas.getChannelId());
                 Message message = channel.sendMessageEmbeds(stateData.getCurrentState().getAsEmbed()).complete();
-                if(guildData.updateMessageId(guild.getIdLong(), message.getIdLong())){
+                if(!guildData.updateMessageId(guild.getIdLong(), message.getIdLong())){
                     System.exit(1);
                 }
                 if(guildDatas.getMention()){
@@ -49,6 +52,7 @@ public class StateDetection extends TimerTask {
         }
         if(!Objects.equals(stateData.getSavedState().getPeoplePresent(), stateData.getCurrentState().getAsState().getPeoplePresent()) && stateData.getCurrentState().getAsState().getOpen()){
             guildData.getGuilds().forEach(guildDatas -> {
+                if(configFile.devSettings().envrioment().equals("dev") && !guildDatas.getGuildId().equals(configFile.devSettings().devServer())) return;
                 Guild guild = shardManager.getGuildById(guildDatas.getGuildId());
                 TextChannel channel = guild.getTextChannelById(guildDatas.getChannelId());
                 Message message = channel.getHistory().getMessageById(guildDatas.getMessageId());
