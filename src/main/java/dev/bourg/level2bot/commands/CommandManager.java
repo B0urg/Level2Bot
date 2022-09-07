@@ -21,7 +21,6 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.jetbrains.annotations.NotNull;
 
-import javax.sql.DataSource;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +33,10 @@ public class CommandManager extends ListenerAdapter {
     private final StateData stateData;
     private final ConfigFile configFile;
 
-    public CommandManager(DataSource dataSource, ConfigFile configFile){
+    public CommandManager(GuildData guildData, StateData stateData, ConfigFile configFile){
         this.configFile = configFile;
-        this.guildData = new GuildData(dataSource, configFile);
-        this.stateData = new StateData(dataSource);
+        this.guildData = guildData;
+        this.stateData = stateData;
     }
 
     /**
@@ -118,7 +117,7 @@ public class CommandManager extends ListenerAdapter {
                     }
                     case "purge" -> {
                         // Deleting guild data and sending a success embed if it was successful
-                        if (!guildData.deleteDate(event.getGuild().getIdLong())) {
+                        if (!guildData.deleteData(event.getGuild().getIdLong())) {
                             event.replyEmbeds(new EmbedBuilder()
                                     .setTitle("Error")
                                     .setDescription("An Error happened while querying to data base \n Try again later or contact developers([here](https://dj-ka.net))")

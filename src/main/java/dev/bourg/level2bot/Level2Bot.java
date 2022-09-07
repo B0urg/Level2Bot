@@ -3,9 +3,11 @@ package dev.bourg.level2bot;
 import dev.bourg.level2bot.commands.CommandManager;
 import dev.bourg.level2bot.config.ConfigFile;
 import dev.bourg.level2bot.config.Configuration;
+import dev.bourg.level2bot.data.GuildData;
 import dev.bourg.level2bot.data.StateData;
 import dev.bourg.level2bot.data.util.DataSourceProvider;
 import dev.bourg.level2bot.data.util.DbSetup;
+import dev.bourg.level2bot.listeners.ChannelRemoveListener;
 import dev.bourg.level2bot.listeners.GuildLeaveListener;
 import dev.bourg.level2bot.listeners.ReadyListener;
 import dev.bourg.level2bot.tasks.StateDetection;
@@ -29,6 +31,8 @@ public class Level2Bot {
     private ShardManager shardManager;
     private ConfigFile configuration;
     private DataSource dataSource;
+    private GuildData guildData;
+    private StateData stateData;
 
 
     public static void main(String[] args) {
@@ -118,11 +122,15 @@ public class Level2Bot {
      */
 
     private void initBot(){
-        shardManager.addEventListener(new ReadyListener(configuration, shardManager), new CommandManager(dataSource, configuration), new GuildLeaveListener(dataSource, configuration));
+
+        this.guildData = new GuildData(dataSource, configuration);
+        this.stateData = new StateData(dataSource);
+
+        shardManager.addEventListener(new ReadyListener(configuration, shardManager), new CommandManager(guildData, stateData, configuration), new GuildLeaveListener(guildData), new ChannelRemoveListener(guildData));
 
 
         Timer timer = new Timer();
-        TimerTask task = new StateDetection(dataSource, configuration, shardManager);
+        TimerTask task = new StateDetection(guildData, stateData, configuration, shardManager);
         timer.schedule(task, 0, 10000);
 
     }
