@@ -223,7 +223,7 @@ public class  GuildData extends DataHolder {
      * @return if the query was successful or not
      */
 
-    public boolean deleteDate(Long guildId){
+    public boolean deleteData(Long guildId){
         try (Connection conn = conn(); PreparedStatement stmt = conn.prepareStatement(
                 "DELETE FROM guilds WHERE guildId = ?;"
         )){
