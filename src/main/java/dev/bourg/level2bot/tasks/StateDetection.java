@@ -19,9 +19,9 @@ public class StateDetection extends TimerTask {
     private final ShardManager shardManager;
     private final ConfigFile configFile;
 
-    public StateDetection(DataSource dataSource, ConfigFile configFile, ShardManager shardManager){
-        this.guildData = new GuildData(dataSource, configFile);
-        this.stateData = new StateData(dataSource);
+    public StateDetection(GuildData guildData, StateData stateData, ConfigFile configFile, ShardManager shardManager){
+        this.guildData = guildData;
+        this.stateData = stateData;
         this.shardManager = shardManager;
         this.configFile = configFile;
     }
@@ -50,13 +50,12 @@ public class StateDetection extends TimerTask {
                 }
             });
         }
-        if(!Objects.equals(stateData.getSavedState().getPeoplePresent(), stateData.getCurrentState().getAsState().getPeoplePresent()) && stateData.getCurrentState().getAsState().getOpen()){
+        if(!stateData.getSavedState().getPeoplePresent().equals(stateData.getCurrentState().getAsState().getPeoplePresent()) && stateData.getCurrentState().getAsState().getOpen()){
             guildData.getGuilds().forEach(guildDatas -> {
                 if(configFile.devSettings().envrioment().equals("dev") && !guildDatas.getGuildId().equals(configFile.devSettings().devServer())) return;
                 Guild guild = shardManager.getGuildById(guildDatas.getGuildId());
                 TextChannel channel = guild.getTextChannelById(guildDatas.getChannelId());
-                Message message = channel.getHistory().getMessageById(guildDatas.getMessageId());
-                message.editMessageEmbeds(stateData.getCurrentState().getAsEmbed()).queue();
+                channel.editMessageEmbedsById(guildDatas.getMessageId(), stateData.getCurrentState().getAsEmbed()).queue();
             });
         }
     }
