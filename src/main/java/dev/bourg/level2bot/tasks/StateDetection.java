@@ -34,6 +34,7 @@ public class StateDetection extends TimerTask {
 
     @Override
     public void run() {
+        if(stateData.getCurrentState().getAsState().getOpen() == null || stateData.getCurrentState().getAsState().getPeoplePresent() == null) return;
         if(stateData.getSavedState().getOpen() != stateData.getCurrentState().getAsState().getOpen()){
             stateData.updateSavedState(stateData.getCurrentState().getAsState());
             guildData.getGuilds().forEach(guildDatas -> {
