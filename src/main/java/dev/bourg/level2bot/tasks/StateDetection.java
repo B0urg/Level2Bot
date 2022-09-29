@@ -34,12 +34,14 @@ public class StateDetection extends TimerTask {
 
     @Override
     public void run() {
+        if(stateData.getCurrentState().getAsState().getOpen() == null || stateData.getCurrentState().getAsState().getPeoplePresent() == null) return;
         if(stateData.getSavedState().getOpen() != stateData.getCurrentState().getAsState().getOpen()){
             stateData.updateSavedState(stateData.getCurrentState().getAsState());
             guildData.getGuilds().forEach(guildDatas -> {
                 if(configFile.devSettings().envrioment().equals("dev") && !guildDatas.getGuildId().equals(configFile.devSettings().devServer())) return;
                 Guild guild = shardManager.getGuildById(guildDatas.getGuildId());
                 TextChannel channel = guild.getTextChannelById(guildDatas.getChannelId());
+                if(channel.retrieveMessageById(guildDatas.getMessageId()).complete().getEmbeds().get(0).getDescription().equals("Level2 is currently closed")) return;
                 Message message = channel.sendMessageEmbeds(stateData.getCurrentState().getAsEmbed()).complete();
                 if(!guildData.updateMessageId(guild.getIdLong(), message.getIdLong())){
                     System.exit(1);
