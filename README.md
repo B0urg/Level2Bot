@@ -25,7 +25,7 @@
 
 ````yml
 mention:
-   description: Should the server members get mentioned for every change of Opening state.
+   description: Should the server members get pinged for every change of Opening state.
 ````
 
 ### links
