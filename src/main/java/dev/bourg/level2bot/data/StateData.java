@@ -63,6 +63,8 @@ public class StateData extends DataHolder {
             JsonObject jsonObject = (JsonObject) JsonParser.parseString(stringBuilder.toString());
             Boolean state = jsonObject.getAsJsonObject("state").get("open").getAsBoolean();
             Integer peoplePresent = jsonObject.getAsJsonObject("sensors").getAsJsonArray("people_now_present").get(0).getAsJsonObject().get("value").getAsInt();
+            assert state != null;
+            assert peoplePresent != null;
             return new StateManager(state, peoplePresent);
 
         } catch (IOException e) {
